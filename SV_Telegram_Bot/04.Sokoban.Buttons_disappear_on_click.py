@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Sokoban_v0.2. Первые кнопки '⬅' и '➡'.
+
+# Sokoban_v0.4. Исчезновение кнопок '⬅' и '➡' при нажатии на них.
 
 import telebot
 
@@ -22,20 +23,25 @@ def send_welcome(message):
         message.from_user, bot.get_me()), parse_mode='html')
 
     # Buttons
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    itembtn1 = types.KeyboardButton(u'⬅')
-    itembtn2 = types.KeyboardButton(u'➡')
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    itembtn1 = types.InlineKeyboardButton(u'⬅', callback_data='-1')
+    itembtn2 = types.InlineKeyboardButton(u'➡', callback_data='+1')
     markup.add(itembtn1, itembtn2)
     bot.send_message(message.chat.id, "Choose direction", reply_markup=markup)
 
 
-# Handle all other messages with content_type 'text' (content_types defaults to ['text'])
-@bot.message_handler(func=lambda message: True)
-def echo_message(message):
+# Handle pressing buttons
+@bot.callback_query_handler(func=lambda call: True)
+def echo_message(call):
     """
-    Echo function.
+    On pressing button '⬅' adds the value '-1'.
+    On pressing button '➡' adds the value '+1'.
     """
-    bot.reply_to(message, message.text)
+    bot.edit_message_text(
+        call.data,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id
+        )
 
 
 print("Program start")

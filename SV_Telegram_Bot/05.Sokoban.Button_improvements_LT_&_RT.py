@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # Sokoban_v0.5. Улучшение кнопок '⬅' и '➡'.
 
 import telebot

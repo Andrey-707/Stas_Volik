@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Sokoban_v0.6. Карта игры Движение влево ('⬅') и вправо ('➡').
+
+# Sokoban_v0.9. Настройка расположения кнопок.
 
 import telebot
 
@@ -12,16 +13,23 @@ bot = telebot.TeleBot(token)
 
 def show_msg(msg):
     """
-    Add buttons '⬅' and '➡'. Data output to chat.
+    Add buttons '⬆', '⬇', '⬅' and '➡'. Data output to chat.
     """
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    itembtn1 = types.InlineKeyboardButton(u'⬅', callback_data='-1')
-    itembtn2 = types.InlineKeyboardButton(u'➡', callback_data='+1')
-    markup.add(itembtn1, itembtn2)
+    gmap_width = str(msg.find(u"█\n") + 1)
+    btn = types.InlineKeyboardButton
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        btn("", callback_data="0"),
+        btn(u"⬆", callback_data="-" + gmap_width),
+        btn(u"⬅", callback_data="-1"),
+        btn(u"➡", callback_data="1"),
+        btn("", callback_data="0"),
+        btn(u"⬇", callback_data=gmap_width),
+    )
     return {
-        'text': msg,
-        # 'text': '<code>' + msg + '</code>',   # object color and location
-        # 'text': '<pre>' + msg + '</pre>',     # object color and location
+        # 'text': msg,
+        'text': '<code>' + msg + '</code>',   # color
+        # 'text': '<pre>' + msg + '</pre>',     # color
         'reply_markup': markup,
         'parse_mode': 'html'
     }
@@ -55,6 +63,8 @@ def send_welcome(message):
 @bot.callback_query_handler(func=lambda call: True)
 def echo_message(call):
     """
+    On pressing button '⬆' adds the value "-" + gmap_width.
+    On pressing button '⬇' adds the value "+" + gmap_width.
     On pressing button '⬅' adds the value '-1'.
     On pressing button '➡' adds the value '+1'.
     """
@@ -62,13 +72,16 @@ def echo_message(call):
     movement = int(call.data)
     pos = gmap.find(u'☿')
     gmap = gmap[:pos] + ' ' + gmap[pos+1:]
-    pos += movement    
+    next_pos = pos + movement
+    if gmap[next_pos] == ' ':
+        pos = next_pos
     gmap = gmap[:pos] + u'☿' + gmap[pos+1:]
-    bot.edit_message_text(
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        **show_msg(gmap)
-        )
+    if gmap[next_pos] != call.message.text:
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            **show_msg(gmap)
+            )
 
 
 print("Program start")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Sokoban_v0.7. Запрограммированные кнопки '⬆' и '⬇'. Смещение по вертикали на 1 тайл.
+
+# Sokoban_v0.6. Карта игры Движение влево ('⬅') и вправо ('➡').
 
 import telebot
 
@@ -12,19 +13,16 @@ bot = telebot.TeleBot(token)
 
 def show_msg(msg):
     """
-    Add buttons '⬆', '⬇', '⬅' and '➡'. Data output to chat.
+    Add buttons '⬅' and '➡'. Data output to chat.
     """
-    gmap_width = str(msg.find(u"█\n")) # <-- offset here !
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    itembtn1 = types.InlineKeyboardButton(u'⬆', callback_data="-" + gmap_width)
-    itembtn2 = types.InlineKeyboardButton(u'⬇', callback_data="+" + gmap_width)
-    itembtn3 = types.InlineKeyboardButton(u'⬅', callback_data='-1')
-    itembtn4 = types.InlineKeyboardButton(u'➡', callback_data='+1')
-    markup.add(itembtn1, itembtn2, itembtn3, itembtn4)
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    itembtn1 = types.InlineKeyboardButton(u'⬅', callback_data='-1')
+    itembtn2 = types.InlineKeyboardButton(u'➡', callback_data='+1')
+    markup.add(itembtn1, itembtn2)
     return {
         'text': msg,
-        # 'text': '<code>' + msg + '</code>',   # object color and location
-        # 'text': '<pre>' + msg + '</pre>',     # object color and location
+        # 'text': '<code>' + msg + '</code>',   # color
+        # 'text': '<pre>' + msg + '</pre>',     # color
         'reply_markup': markup,
         'parse_mode': 'html'
     }
@@ -58,8 +56,6 @@ def send_welcome(message):
 @bot.callback_query_handler(func=lambda call: True)
 def echo_message(call):
     """
-    On pressing button '⬆' adds the value "-" + gmap_width.
-    On pressing button '⬇' adds the value "+" + gmap_width.
     On pressing button '⬅' adds the value '-1'.
     On pressing button '➡' adds the value '+1'.
     """

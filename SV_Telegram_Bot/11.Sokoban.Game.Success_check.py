@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Sokoban_v1.0. Игра. Плюс перехват исключения IndexError.
+
+# Sokoban_v1.1. Игра. Проверка на успешное завершение (игрок собрал на игровом поле три '◯').
 
 import telebot
 
@@ -27,7 +28,7 @@ def show_map(gmap):
     )
     return {
         # 'text': gmap,
-        'text': '<code>' + gmap + '</code>',   # object color and location
+        'text': '<code>'+gmap+'</code>',   # object color and location
         # 'text': '<pre>' + gmap + '</pre>',   # object color and location
         'reply_markup': markup,
         'parse_mode': 'html'
@@ -49,7 +50,7 @@ def welcome_and_map(message):
     gmap = u"""
         ॥॥॥॥॥॥॥॥॥॥
         ॥॥॥॥॥  . ॥
-        ॥  ●☿● ● ॥
+        ॥  ◉☿◉ ◉ ॥
         ॥     ..॥॥
         ॥॥॥॥॥॥॥॥॥॥
     """.replace('\n        ', '\n')
@@ -84,11 +85,11 @@ def callback_inline(call):
             new_place = gmap[new_pos]
             next_place = gmap[new_pos + movement]
 
-            if new_place in (' ', '.') or (new_place in (u'●', u'◉') and next_place in (' ', '.')):
-                if new_place in (u'●', u'◉'):
-                    gmap = replace_on_map(gmap, new_pos + movement, u'◉' if next_place == '.' else u'●')
+            if new_place in (' ', '.') or (new_place in (u'◉', u'◯') and next_place in (' ', '.')):
+                if new_place in (u'◉', u'◯'):
+                    gmap = replace_on_map(gmap, new_pos + movement, u'◯' if next_place == '.' else u'◉')
                 gmap = replace_on_map(gmap, pos, ' ' if gmap[pos] == u'☿' else '.')
-                gmap = replace_on_map(gmap, new_pos, u'☿' if new_place in (' ', u'●') else u'♆')
+                gmap = replace_on_map(gmap, new_pos, u'☿' if new_place in (' ', u'◉') else u'♆')
 
             if gmap != call.message.text:
                 bot.edit_message_text(
@@ -96,6 +97,10 @@ def callback_inline(call):
                     message_id=call.message.message_id,
                     **show_map(gmap)
                 )
+            
+            if gmap.count(u'◯') == 3:
+                bot.send_message(call.message.chat.id, "Поздравляю! Вы выиграли!")
+
     except IndexError as IE:
         print(repr(IE))
 

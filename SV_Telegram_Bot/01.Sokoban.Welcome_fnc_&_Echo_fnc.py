@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # Sokoban_v0.1. Функция приветствия и эхо-функция.
 
 import telebot

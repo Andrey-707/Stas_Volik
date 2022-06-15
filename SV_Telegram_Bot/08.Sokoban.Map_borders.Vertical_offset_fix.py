@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # Sokoban_v0.8. Границы карты. Фикс горизонтального смещения.
 
 import telebot
@@ -23,8 +24,8 @@ def show_msg(msg):
     markup.add(itembtn1, itembtn2, itembtn3, itembtn4)
     return {
         'text': msg,
-        # 'text': '<code>' + msg + '</code>',   # object color and location
-        # 'text': '<pre>' + msg + '</pre>',     # object color and location
+        # 'text': '<code>' + msg + '</code>',   # color
+        # 'text': '<pre>' + msg + '</pre>',     # color
         'reply_markup': markup,
         'parse_mode': 'html'
     }

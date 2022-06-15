@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-# Sokoban_v1.1. Game. Sokoban.
+
+# Sokoban Game. Собрать на игровом поле три символа '◯'.
+# Недостаток игры заключается в отличии отображения игрового поля gmap при открытии на разных устройствах,
+# т.е. при запуске игры на мобильном устройстве и ПК игровое поле будет отличаться.
+# Я подгонял симметрию gmap (выбирал символы ASCII) под свое мобильное устройство.
 
 import telebot
 
@@ -27,7 +31,7 @@ def show_map(gmap):
     )
     return {
         # 'text': gmap,
-        'text': '<code>' + gmap + '</code>',   # object color and location
+        'text': '<code>'+gmap+'</code>',   # object color and location
         # 'text': '<pre>' + gmap + '</pre>',   # object color and location
         'reply_markup': markup,
         'parse_mode': 'html'
